@@ -11,7 +11,7 @@ const definirPresupuesto=()=>{
         setTimeout(()=>{
             error.value=""
         },3000)
-    
+        return
     }
     emit('definir-presupuesto',presupuesto.value)
 
