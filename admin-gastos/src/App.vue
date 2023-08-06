@@ -1,13 +1,40 @@
 <script setup>
 import ControlPresupuesto from './components/ControlPresupuesto.vue';
 import Presupuesto from './components/Presupuesto.vue'
-import { ref } from 'vue'
-
+import { ref,reactive} from 'vue'
+import iconoNuevoGasto from './assets/img/nuevo-gasto.svg'
+import Modal from './components/Modal.vue'
 const presupuesto=ref(0);
 const disponible=ref(0);
+const modal=reactive({
+  animar:false,
+  mostrar:false
+})
+/* CREAMOS UN ELEMENTO DE GASTO */
+const gasto=reactive({
+  nombre:'',
+  cantidad:'',
+  categoria:'',
+  id:null,
+  fecha:Date.now()
+})
 const definirPresupuesto=(cantidad)=>{
     presupuesto.value=cantidad
     disponible.value=cantidad
+}
+const mostrarmodal=()=>{
+  modal.animar=true
+  setTimeout(()=>{
+    modal.animar=true
+  },600)
+  modal.mostrar=true
+}
+const cerrarModal=()=>{
+  modal.animar=false
+  setTimeout(()=>{
+    modal.mostrar=false
+  },500)
+  
 }
 </script>
 
@@ -25,7 +52,21 @@ const definirPresupuesto=(cantidad)=>{
       :disponible="disponible"></ControlPresupuesto>
       </div>
       
+      
     </header>
+    <main v-if="presupuesto>0">
+        <div class="crear-gasto">
+          <img :src="iconoNuevoGasto" alt="icono nuevo gasto"
+          @click="mostrarmodal">
+        </div>
+        <!-- AQUI SE ESTA MANDANDO LA FUNCION PERO AQUI SE ESTA MODIFICANDO LOS VALORES DEL MISMO MODAL -->
+        <Modal v-if="modal.mostrar==true"
+        @cerrar-modal="cerrarModal"
+        :modal="modal"
+        v-model:nombre="gasto.nombre"
+        v-model:cantidad="gasto.cantidad"
+        v-model:categoria="gasto.categoria"></Modal>
+      </main>
   </div>
 </template>
 
@@ -81,5 +122,16 @@ const definirPresupuesto=(cantidad)=>{
   }
   .sombre{
     box-shadow:0px 10px 15px -3px rgba(0, 0, 0, 0.1)
+  }
+  .crear-gasto{
+    position: fixed;
+    bottom: 5rem;
+    right: 5rem;
+  }
+  .crear-gasto img{
+    width: 5rem;
+  }
+  .crear-gasto img:hover{
+    cursor: pointer;
   }
 </style>
