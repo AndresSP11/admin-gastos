@@ -19,7 +19,8 @@
     text-align: center;
     background-color: var(--blanco);
     border-left: .5rem solid #b91c1c;
-    color:#b91c1c
+    color:#b91c1c;
+    margin-bottom: 20px;
 }
 
 </style>

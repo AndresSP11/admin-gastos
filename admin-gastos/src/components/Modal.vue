@@ -1,6 +1,13 @@
 <script setup>
+    /* Este importe de cerrar modal sera para la imagenes */
     import cerrarModal from '../assets/img/cerrar.svg'
-    defineEmits(['cerrar-modal','update:nombre','update:cantidad','update:categoria'])
+    import Alerta from './Alerta.vue'
+    import { ref } from 'vue'
+
+    
+    const emit=defineEmits(['cerrar-modal','update:nombre','update:cantidad','update:categoria','guardar-gasto'])
+    const error=ref('')
+    
     const props=defineProps({
         modal:{
             type:Object,
@@ -19,6 +26,28 @@
             required:true
         }
     })
+    const agregarGasto=()=>{
+        /* Validar que todos los campso tengan algo */
+        const {nombre,cantidad,categoria}=props
+        if([nombre,cantidad,categoria].includes('')){
+            error.value='Todo los campos son obligatorios'
+            setTimeout(()=>{
+                error.value=''
+            },3000)
+            
+            console.log('Hay campos vacios')
+            return
+        }
+        if(cantidad<=0){
+            error.value='Cantidad no valida'
+            setTimeout(()=>{
+                error.value='' 
+            },3000) 
+            return
+        }
+
+        emit('guardar-gasto');
+    }
 </script>
 <template>
     <div class="modal">
@@ -27,7 +56,11 @@
         @click="$emit('cerrar-modal')">
         <div class="contenedor contenedor-formulario"
         :class="[modal.animar ? 'animar' : 'cerrar']">
-            <form class="nuevo-gasto">
+            <form class="nuevo-gasto"
+            @submit.prevent="agregarGasto"
+            >
+                <Alerta v-if="error">
+                {{ error }}</Alerta>
                 <legend>Añadir Gasto</legend>
                 <div class="campo">
                     <label for="">Nombre Gasto:</label>

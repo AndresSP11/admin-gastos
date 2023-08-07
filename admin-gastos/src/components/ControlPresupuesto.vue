@@ -22,9 +22,11 @@
             <button class="reset-app">Resetear App</button>
             <p>
                 <span>Presupuesto</span>
+                <!-- Formartear cantidad, le esta cubriendo desde JavaScript  -->
                 {{ formatearCantidad(presupuesto) }}
             </p>
             <p>
+                <!-- Formartear cantidad, le esta cubriendo desde JavaScript  -->
                 <span>Disponible</span>
                 {{ formatearCantidad(disponible) }}
             </p>
@@ -42,7 +44,7 @@
         flex-direction: column;
     }
     .dos-columnas :first-child{
-        margin-bottom: ;
+        margin-bottom: 20px;
     }
     @media (min-width: 768px){
         .dos-columnas{

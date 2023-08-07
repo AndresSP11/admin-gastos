@@ -4,6 +4,7 @@ import Presupuesto from './components/Presupuesto.vue'
 import { ref,reactive} from 'vue'
 import iconoNuevoGasto from './assets/img/nuevo-gasto.svg'
 import Modal from './components/Modal.vue'
+import { generarId } from './assets/helpers'
 const presupuesto=ref(0);
 const disponible=ref(0);
 const modal=reactive({
@@ -11,6 +12,7 @@ const modal=reactive({
   mostrar:false
 })
 /* CREAMOS UN ELEMENTO DE GASTO */
+/* ESTE CASO VA UTILIZAR LA PARTE DE MODAL, PARA ASIGNARLE LOS VALORES DE MODAL */
 const gasto=reactive({
   nombre:'',
   cantidad:'',
@@ -18,10 +20,16 @@ const gasto=reactive({
   id:null,
   fecha:Date.now()
 })
+const gastos=ref([]);
+/*Esta funciio esta utilizando los omponentes de Presupuesto y App.vue, para asignarle valor al presupuesto*/
 const definirPresupuesto=(cantidad)=>{
     presupuesto.value=cantidad
     disponible.value=cantidad
 }
+/* 
+Estas es la función que vamos a utilizar para mostrar el modal, una vez le hemos dadod click a la parte de + para que suba el modal
+*/
+
 const mostrarmodal=()=>{
   modal.animar=true
   setTimeout(()=>{
@@ -29,12 +37,21 @@ const mostrarmodal=()=>{
   },600)
   modal.mostrar=true
 }
+/* En este caso, se esta cerrando o utilizando esta función en el mismo Modal, para cerrar dicho valor */ 
 const cerrarModal=()=>{
   modal.animar=false
   setTimeout(()=>{
     modal.mostrar=false
   },500)
   
+}
+const guardarGasto=()=>{
+  gastos.value.push({
+    ...gasto,
+    id:generarId()
+    
+  }
+  )
 }
 </script>
 
@@ -43,10 +60,13 @@ const cerrarModal=()=>{
     <header>
       <h1>Planificador de Gastos</h1>
       <div class="contenedor-header contenedor sombre">
+      <!-- En esta linea de codigo, se va ejecutar la parte de presupuesto, una vez se coloque 
+      el elemento reacivo valor del presupuesto, que estamos enviando mediante la parte  -->
       <Presupuesto 
       v-if="presupuesto===0"
       @definir-presupuesto="definirPresupuesto">
       </Presupuesto>
+      <!-- De aqui vamos a mandar los daatos del padre hacia el hijo, que en este caso vendria a dar lectura, mediante los props -->
       <ControlPresupuesto v-else
       :presupuesto="presupuesto"
       :disponible="disponible"></ControlPresupuesto>
@@ -56,12 +76,15 @@ const cerrarModal=()=>{
     </header>
     <main v-if="presupuesto>0">
         <div class="crear-gasto">
+          <!--  -->
           <img :src="iconoNuevoGasto" alt="icono nuevo gasto"
+          
           @click="mostrarmodal">
         </div>
         <!-- AQUI SE ESTA MANDANDO LA FUNCION PERO AQUI SE ESTA MODIFICANDO LOS VALORES DEL MISMO MODAL -->
         <Modal v-if="modal.mostrar==true"
         @cerrar-modal="cerrarModal"
+        @guardar-gasto="guardarGasto"
         :modal="modal"
         v-model:nombre="gasto.nombre"
         v-model:cantidad="gasto.cantidad"

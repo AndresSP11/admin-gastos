@@ -5,14 +5,17 @@ const presupuesto=ref(0);
 const error=ref();
 const emit=defineEmits(['definir-presupuesto'])
 const definirPresupuesto=()=>{
+    /* En este caso, se va asignar el valor de error, error.value, luego se le va a quitar el valor, para que se deje de presentar el slot */
     if(presupuesto.value<=0){
-    
         error.value="Presupuesto no valido"
         setTimeout(()=>{
             error.value=""
         },3000)
         return
     }
+
+    /* Aqui, vamos asignar el valor de la parte del presupuesto para que cerremos desde el APP una vez enviando
+    Estte es siempre y cuando pase el error */
     emit('definir-presupuesto',presupuesto.value)
 
 }
@@ -48,7 +51,7 @@ const definirPresupuesto=()=>{
     .campo{
         display: grid;
         gap:2rem;
-        background-color: ;
+        
     }
     .campo label{
         font-size: 2.5rem;
