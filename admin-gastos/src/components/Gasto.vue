@@ -1,6 +1,22 @@
 <script setup>
 import { formatearCantidad } from '../assets/helpers';
-
+import { formatearFecha } from '../assets/helpers';
+import IconoAhorro from '../assets/img/icono_ahorro.svg'
+import IconoCasa from '../assets/img/icono_casa.svg'
+import IconoComida from '../assets/img/icono_comida.svg'
+import IconoGastos from '../assets/img/icono_gastos.svg'
+import IconoOcio from '../assets/img/icono_ocio.svg'
+import IconoSalud from '../assets/img/icono_salud.svg'
+import IconoSuscripciones from '../assets/img/icono_suscripciones.svg'
+const diccionarioIconos = {
+        ahorro : IconoAhorro,
+        comida : IconoComida,
+        casa : IconoCasa,
+        gastos : IconoGastos,
+        ocio : IconoOcio,
+        salud : IconoSalud,
+        suscripciones : IconoSuscripciones
+}
 const props=defineProps({
     gasto:{
         type:Object,
@@ -12,15 +28,59 @@ const props=defineProps({
 <template>
     <div class="gasto sombre">
         <div class="contenido">
+            <img :src="diccionarioIconos[gasto.categoria]" class="icono">
             <div class="detalles">
-
+                <p class="categoria">{{ gasto.categoria }}</p>
+                <p class="nombre">{{ gasto.nombre }}</p>
+                <p class="fecha">Fecha: <span>{{ formatearFecha(gasto.fecha) }}</span></p>
             </div>
         </div>
-        <p>{{ formatearCantidad(gasto.cantidad) }}</p>
+        <p class="cantidad">{{ formatearCantidad(gasto.cantidad) }}</p>
     </div>
 
 </template>
 
-<style>
-
+<style scoped>
+    .gasto{
+        margin: 4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .contenido{
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    .icono{
+        width: 5rem;
+    }
+    .detalles p{
+        margin: 0 0 1rem  0;
+    }
+    .categoria{
+        color: var(--gris);
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        font-weight: 900;
+    }
+    .nombre{
+        color: var(--gris-oscuro);
+        font-size: 2.4rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .fecha{
+        font-size:1.6rem;
+        font-weight:900;
+    }
+    .fecha span{
+        font-weight: 400;
+    }
+    .cantidad{
+        font-size: 3rem;
+        font-weight: 900;
+        margin: 0;
+    }
 </style>
