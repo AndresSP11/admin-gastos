@@ -4,8 +4,10 @@ import Presupuesto from './components/Presupuesto.vue'
 import { ref,reactive} from 'vue'
 import iconoNuevoGasto from './assets/img/nuevo-gasto.svg'
 import Modal from './components/Modal.vue'
+/*Este generr Id s un generado de Id de forma unica*/
 import { generarId } from './assets/helpers'
 import Gasto from './components/Gasto.vue'
+/*Presupuesto y disponible van a tener que ir de la mano*/
 const presupuesto=ref(0);
 const disponible=ref(0);
 const modal=reactive({
