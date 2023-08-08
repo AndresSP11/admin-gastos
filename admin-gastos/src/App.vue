@@ -1,7 +1,7 @@
 <script setup>
 import ControlPresupuesto from './components/ControlPresupuesto.vue';
 import Presupuesto from './components/Presupuesto.vue'
-import { ref,reactive} from 'vue'
+import { ref,reactive, watch} from 'vue'
 import iconoNuevoGasto from './assets/img/nuevo-gasto.svg'
 import Modal from './components/Modal.vue'
 /*Este generr Id s un generado de Id de forma unica*/
@@ -10,12 +10,18 @@ import Gasto from './components/Gasto.vue'
 /*Presupuesto y disponible van a tener que ir de la mano*/
 const presupuesto=ref(0);
 const disponible=ref(0);
+const gastado=ref(0);
 const modal=reactive({
   animar:false,
   mostrar:false
 })
+
+
+
+
 /* CREAMOS UN ELEMENTO DE GASTO */
 /* ESTE CASO VA UTILIZAR LA PARTE DE MODAL, PARA ASIGNARLE LOS VALORES DE MODAL */
+
 const gasto=reactive({
   nombre:'',
   cantidad:'',
@@ -29,6 +35,14 @@ const definirPresupuesto=(cantidad)=>{
     presupuesto.value=cantidad
     disponible.value=cantidad
 }
+watch(gastos,()=>{
+  const totalGastado= gastos.value.reduce((total,gasto)=>gasto.cantidad + total, 0)
+  console.log(totalGastado)
+  gastado.value=totalGastado
+  disponible.value=presupuesto.value-gastado.value;
+},{
+  deep:true
+})
 /* 
 Estas es la función que vamos a utilizar para mostrar el modal, una vez le hemos dadod click a la parte de + para que suba el modal
 */
@@ -66,7 +80,9 @@ const guardarGasto=()=>{
 </script>
 
 <template>
-  <div>
+  <div
+  :class="{fijar: modal.nombre}"
+  >
     <header>
       <h1>Planificador de Gastos</h1>
       <div class="contenedor-header contenedor sombre">
@@ -79,7 +95,8 @@ const guardarGasto=()=>{
       <!-- De aqui vamos a mandar los daatos del padre hacia el hijo, que en este caso vendria a dar lectura, mediante los props -->
       <ControlPresupuesto v-else
       :presupuesto="presupuesto"
-      :disponible="disponible"></ControlPresupuesto>
+      :disponible="disponible"
+      :gastado="gastado"></ControlPresupuesto>
       </div>
       
       
@@ -104,9 +121,11 @@ const guardarGasto=()=>{
         </div>
         <!-- AQUI SE ESTA MANDANDO LA FUNCION PERO AQUI SE ESTA MODIFICANDO LOS VALORES DEL MISMO MODAL -->
         <Modal v-if="modal.mostrar==true"
+       
         @cerrar-modal="cerrarModal"
         @guardar-gasto="guardarGasto"
         :modal="modal"
+        :disponible="disponible"
         v-model:nombre="gasto.nombre"
         v-model:cantidad="gasto.cantidad"
         v-model:categoria="gasto.categoria"></Modal>
@@ -115,6 +134,10 @@ const guardarGasto=()=>{
 </template>
 
 <style>
+  .fijar{
+    overflow: hidden;
+    height: 100vh;
+  }
   :root{
     --azul: #3b82f6;
     --blanco: #fff;
