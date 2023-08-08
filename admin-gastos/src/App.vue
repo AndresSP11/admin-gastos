@@ -43,6 +43,22 @@ watch(gastos,()=>{
 },{
   deep:true
 })
+const reiniciarStateGasto=()=>{
+  Object.assign(gasto,{
+    nombre:'',
+    cantidad:'',
+    categoria:'',
+    id:null,
+    fecha:Date.now()
+  })
+}
+watch(modal,()=>{
+    if(!modal.mostrar){
+      reiniciarStateGasto()
+    }
+},{
+  deep:true
+})
 /* 
 Estas es la función que vamos a utilizar para mostrar el modal, una vez le hemos dadod click a la parte de + para que suba el modal
 */
@@ -62,20 +78,35 @@ const cerrarModal=()=>{
   },500)
   
 }
-const guardarGasto=()=>{
-  gastos.value.push({
-    ...gasto,
-    id:generarId()
+const guardarGasto=(id)=>{
+  if(gasto.id){
+    /* Extraemos el id, del elemento reactivo que se encuentra ahì */
+    const { id } = gasto
+    const i= gastos.value.findIndex((gasto=>gasto.id==id))
+    gastos.value[i]={...gasto}
+  }else{
+    gastos.value.push({
+      ...gasto,
+        id:generarId()
+      }
+    )
   }
-  )
+
   cerrarModal();
-  Object.assign(gasto,{
-    nombre:'',
-    cantidad:'',
-    categoria:'',
-    id:null,
-    fecha:Date.now()
-  })
+  reiniciarStateGasto();
+}
+/* Esta funcion me permite ver el estado en el que se encuentra la parte seleccionada, el objeto seleccionado
+Osea de aqui se obtiene el id, nombre etc... es por ellos que se esta utilizando la parte de filter para obtner el valor */
+const seleccionarGasto=(id)=>{
+  /* Aqui el filter te va botar un arreglo de demasiado elementos ,e pero en e este caso como un es un arreglo de un solo elemento, solo te devolverá uno... */
+  /* Lo que esta haciedn oeta linea de codigo, e que cuando presionemos el nombre, automaticamente se haga el autollenado del formulario, de la palabra gasto, de 
+  esta forma se conocerá mejor ello... */
+  /* Recordando tambien que en cada input esta el valor dinamico, de esta forma e valor que es agregado en cada atributo del objeto, este se asignará automaticamente.   */
+  const gastoEditar=gastos.value.filter(gasto=>gasto.id===id)[0]
+  
+  
+  Object.assign(gasto,gastoEditar);
+  mostrarmodal()
 }
 </script>
 
@@ -110,6 +141,7 @@ const guardarGasto=()=>{
           v-for="gasto in gastos"
           :key="gasto.id"
           :gasto="gasto"
+          @seleccionar-gasto="seleccionarGasto"
           ></Gasto>
         </div>
 

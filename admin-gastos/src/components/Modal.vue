@@ -56,6 +56,7 @@
             },3000) 
             return
         }
+        /* En este caso no pasará a la función si es que no pasa de los errores predeterminados... */
         emit('guardar-gasto');
     }
 </script>
