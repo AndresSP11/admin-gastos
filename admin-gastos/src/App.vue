@@ -52,6 +52,7 @@ const reiniciarStateGasto=()=>{
     fecha:Date.now()
   })
 }
+/* Sirve para reiniciar el state de todo los valores del objeto */
 watch(modal,()=>{
     if(!modal.mostrar){
       reiniciarStateGasto()
@@ -141,6 +142,7 @@ const seleccionarGasto=(id)=>{
           v-for="gasto in gastos"
           :key="gasto.id"
           :gasto="gasto"
+          
           @seleccionar-gasto="seleccionarGasto"
           ></Gasto>
         </div>
@@ -158,6 +160,7 @@ const seleccionarGasto=(id)=>{
         @guardar-gasto="guardarGasto"
         :modal="modal"
         :disponible="disponible"
+        :id="gasto.id"
         v-model:nombre="gasto.nombre"
         v-model:cantidad="gasto.cantidad"
         v-model:categoria="gasto.categoria"></Modal>

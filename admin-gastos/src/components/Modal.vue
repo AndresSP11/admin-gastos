@@ -28,11 +28,18 @@
         disponible:{
             type:Number,
             required:true
+        },
+        id:{
+            type:[String,null],
+            required:true
         }
     })
+    const old= props.cantidad
+    console.log(props.id)
+
     const agregarGasto=()=>{
         /* Validar que todos los campso tengan algo */
-        const {nombre,cantidad,categoria,disponible}=props
+        const {nombre,cantidad,categoria,disponible,id}=props
         if([nombre,cantidad,categoria].includes('')){
             error.value='Todo los campos son obligatorios'
             setTimeout(()=>{
@@ -49,13 +56,24 @@
             },3000) 
             return
         }
-        if(cantidad>disponible){
+        if(id){
+            if(cantidad>old+disponible){
+                error.value='Has excedido el presupuesto'
+                setTimeout(()=>{
+                error.value='' 
+                 },3000) 
+            return
+            }
+        }else{
+            if(cantidad>disponible){
             error.value='Has excedido el presupuesto'
             setTimeout(()=>{
                 error.value='' 
             },3000) 
             return
         }
+        }
+        
         /* En este caso no pasará a la función si es que no pasa de los errores predeterminados... */
         emit('guardar-gasto');
     }
@@ -72,7 +90,7 @@
             >
                 <Alerta v-if="error">
                 {{ error }}</Alerta>
-                <legend>Añadir Gasto</legend>
+                <legend>{{ id? 'Guardar cambios':'Añadir Gasto' }}</legend>
                 <div class="campo">
                     <label for="">Nombre Gasto:</label>
                     <input 
@@ -110,14 +128,30 @@
                 </div>
 
                 <input type="submit"
-                value="Añadir Gasto">
+                :value="[id? 'Guardar Cambios' : 'Añadir Gasto']">
             </form>
+            <button v-if="id"
+            type="button"
+            class="btn-eliminar"
+            >Eliminar gasto</button>
         </div>
     </div>
 </template>
 <style scoped>
     .contenedor{
         background-color: rgba(12, 1, 1, 0.89);
+    }
+    .btn-eliminar{
+        border: none;
+        border-radius: 20px;
+        padding: 1rem;
+        width: 100%;
+        background-color: #ef444e;
+        font-weight: 700;
+        font-size: 3rem;
+        color: var(--blanco);
+        margin-top: 10rem;
+        cursor: pointer;
     }
     .contenedor-formulario{
         transition: all ease-in-out 300ms;
