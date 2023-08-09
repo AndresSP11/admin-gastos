@@ -1,7 +1,7 @@
 <script setup>
 import ControlPresupuesto from './components/ControlPresupuesto.vue';
 import Presupuesto from './components/Presupuesto.vue'
-import { ref,reactive, watch,computed} from 'vue'
+import { ref,reactive, watch,computed, onMounted} from 'vue'
 import iconoNuevoGasto from './assets/img/nuevo-gasto.svg'
 import Modal from './components/Modal.vue'
 /*Este generr Id s un generado de Id de forma unica*/
@@ -42,6 +42,7 @@ watch(gastos,()=>{
   console.log(totalGastado)
   gastado.value=totalGastado
   disponible.value=presupuesto.value-gastado.value;
+  localStorage.setItem('gastos',JSON.stringify(gastos.value))
 },{
   deep:true
 })
@@ -67,7 +68,17 @@ watch(modal,()=>{
 watch(presupuesto,()=>{
   localStorage.setItem('presupuesto',presupuesto.value)
 })
-
+onMounted(()=>{
+  const presupuestoStorage=localStorage.getItem('presupuesto')
+  if(presupuestoStorage){
+    presupuesto.value=Number(presupuestoStorage)
+    disponible.value=Number(presupuestoStorage)
+  }
+  const gastoStorage=localStorage.getItem('gastos')
+  if(gastoStorage){
+    gastos.value=JSON.parse(gastoStorage)
+  }
+})
 /* 
 Estas es la función que vamos a utilizar para mostrar el modal, una vez le hemos dadod click a la parte de + para que suba el modal
 */
@@ -129,7 +140,13 @@ const gastosFiltrados = computed(()=>{
   }
   return gastos.value
 })
-
+const resetApp=()=>{
+  console.log("Reseteando App")
+  if(confirm('¿DESEAS REINICIAR PRESUPUESTOS Y GASTOS?')){
+    gastos.value=[]
+    presupuesto.value=0
+  }
+}
 
 </script>
 
@@ -150,7 +167,8 @@ const gastosFiltrados = computed(()=>{
       <ControlPresupuesto v-else
       :presupuesto="presupuesto"
       :disponible="disponible"
-      :gastado="gastado"></ControlPresupuesto>
+      :gastado="gastado"
+      @reset-app="resetApp"></ControlPresupuesto>
       </div>
       
       

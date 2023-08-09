@@ -1,6 +1,9 @@
 <script setup>
-    import imagen from '../assets/img/grafico.jpg'
+    import { computed } from 'vue'
+    import CircleProgress from 'vue3-circle-progress'
+    import "vue3-circle-progress/dist/circle-progress.css"
     import { formatearCantidad } from '../assets/helpers';
+    defineEmits(['reset-app'])
     const props=defineProps({
         presupuesto:{
             type:Number,
@@ -15,15 +18,27 @@
             required:true
         }
     })
+    const porcentaje=computed(()=>{
+        return parseInt(((props.presupuesto - props. disponible)/props.presupuesto)*100)
+    })
 </script>
 
 <template>
     <div class="dos-columnas">
         <div class="contenedor-grafico">
-            <img :src="imagen">
+            <p class="porcentaje">{{ porcentaje }}%</p>
+            <!-- AQUI VAMOS A EMITIR LA FUNCIO DE PORCANTJE -->
+            <CircleProgress
+            :percent="porcentaje"
+            :size="250"
+            :border-width="30"
+            :border-bg-width="30"
+            fill-color="#3b82f6"
+            empty-color="#F5F5F5"></CircleProgress>
         </div>
         <div class="contenedor-presupuesto">
-            <button class="reset-app">Resetear App</button>
+            <button class="reset-app"
+            @click="$emit('reset-app')">Resetear App</button>
             <p>
                 <span>Presupuesto</span>
                 <!-- Formartear cantidad, le esta cubriendo desde JavaScript  -->
@@ -87,6 +102,22 @@
     }   
     }
     .contenedor-presupuesto span{
+        font-weight: 900;
+        color: var(--azul);
+    }
+    .contenedor-grafico{
+        position:relative;
+    }
+    .porcentaje{
+        position: absolute;
+        margin: auto;
+        top: calc(50%-1.5rem);
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 100;
+        font-size: 3rem;
+        margin-top: 100px;
         font-weight: 900;
         color: var(--azul);
     }
