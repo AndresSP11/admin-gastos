@@ -5,7 +5,7 @@
     import { ref } from 'vue'
 
     
-    const emit=defineEmits(['cerrar-modal','update:nombre','update:cantidad','update:categoria','guardar-gasto'])
+    const emit=defineEmits(['cerrar-modal','update:nombre','update:cantidad','update:categoria','guardar-gasto','eliminar-gasto'])
     const error=ref('')
     
     const props=defineProps({
@@ -133,6 +133,7 @@
             <button v-if="id"
             type="button"
             class="btn-eliminar"
+            @click="$emit('eliminar-gasto')"
             >Eliminar gasto</button>
         </div>
     </div>
