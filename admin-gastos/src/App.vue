@@ -60,6 +60,12 @@ watch(modal,()=>{
 },{
   deep:true
 })
+
+/* Almacenando en localStorage */
+watch(presupuesto,()=>{
+  localStorage.setItem('presupuesto',presupuesto.value)
+})
+
 /* 
 Estas es la función que vamos a utilizar para mostrar el modal, una vez le hemos dadod click a la parte de + para que suba el modal
 */
